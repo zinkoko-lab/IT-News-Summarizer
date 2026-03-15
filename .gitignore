@@ -1,0 +1,27 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Virtual env
+.venv/
+
+# Local env and secrets
+.env
+*.pem
+*.key
+*.csv
+
+# Build artifacts
+build/
+*.zip
+response.json
+
+# Local policy/temp files
+*-policy.json
+trust-policy.json
+
+# Editor
+.vscode/
+.DS_Store
