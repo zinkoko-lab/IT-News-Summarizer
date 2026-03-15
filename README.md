@@ -4,7 +4,7 @@ NewsAPI から Global/Japan の IT ニュースを取得し、Gemini で要約�
 
 ## 構成
 
-- `app/sources.py`: Global/Japan のニュース取得（各カテゴリ最大5件）
+- `app/sources.py`: Global/Japan のニュース取得（各カテゴリ最大50件）
 - `app/summarizer.py`: Gemini による Top 5 選定と要約
 - `app/formatter.py`: LINE テキストメッセージ生成（URLなし）
 - `app/line_client.py`: LINE Messaging API Push
@@ -45,7 +45,8 @@ python main.py
   - `fetch_global_it_news`（検索語: `AI OR Technology OR "Global Trend"`）
   - `fetch_japan_it_news`（`country=jp`, `category=technology`）
 - 24時間フィルタ: `published_at` を UTC 基準で判定
-- Top 5 固定: `global` と `japan` をそれぞれ最大5件
+- 取得件数: `global` と `japan` をそれぞれ最大50件
+- Top 5 選定: Gemini が各カテゴリから重要度順に5件を選定
 - Gemini入力: タイトルとdescriptionのみ（URLは渡さない）
 - LINE配信: URLなし、要約テキストのみ
 - 出力形式:

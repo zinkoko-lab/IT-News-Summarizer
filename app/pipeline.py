@@ -35,13 +35,14 @@ def run_pipeline(settings: Settings, include_qiita_zenn: bool = True) -> dict:
         timeout_seconds=settings.request_timeout_seconds,
     )
 
-    category_limit = min(max(settings.top_n, 1), 5)
-    global_raw, japan_raw = source_client.fetch_all(limit_per_category=category_limit)
-    global_unique = deduplicate_articles(global_raw)[:5]
-    japan_unique = deduplicate_articles(japan_raw)[:5]
+    fetch_limit = 50
+    top_n = min(max(settings.top_n, 1), 5)
+    global_raw, japan_raw = source_client.fetch_all(limit_per_category=fetch_limit)
+    global_unique = deduplicate_articles(global_raw)[:fetch_limit]
+    japan_unique = deduplicate_articles(japan_raw)[:fetch_limit]
 
-    global_ranked = summarizer.rank_and_summarize(global_unique, region="global", top_n=category_limit)[:5]
-    japan_ranked = summarizer.rank_and_summarize(japan_unique, region="japan", top_n=category_limit)[:5]
+    global_ranked = summarizer.rank_and_summarize(global_unique, region="global", top_n=top_n)[:top_n]
+    japan_ranked = summarizer.rank_and_summarize(japan_unique, region="japan", top_n=top_n)[:top_n]
 
     messages: list[dict] = [build_text_message(global_count=len(global_ranked), japan_count=len(japan_ranked))]
     messages.append(build_summary_text_message(global_ranked, region="global"))

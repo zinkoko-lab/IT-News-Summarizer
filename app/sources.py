@@ -63,9 +63,9 @@ class SourceClient:
             )
         return out
 
-    def fetch_global_it_news(self, limit: int = 5) -> list[Article]:
+    def fetch_global_it_news(self, limit: int = 50) -> list[Article]:
         """Global: AI, Technology, Global Trend で検索。"""
-        target = min(max(limit, 1), 5)
+        target = min(max(limit, 1), 50)
         url = "https://newsapi.org/v2/everything"
         from_utc = (now_utc() - timedelta(hours=24)).isoformat(timespec="seconds")
         primary_params = {
@@ -101,9 +101,9 @@ class SourceClient:
             )
         return articles[:target]
 
-    def fetch_japan_it_news(self, limit: int = 5) -> list[Article]:
+    def fetch_japan_it_news(self, limit: int = 50) -> list[Article]:
         """Japan: country=jp, category=technology。"""
-        target = min(max(limit, 1), 5)
+        target = min(max(limit, 1), 50)
 
         top_headlines_url = "https://newsapi.org/v2/top-headlines"
         top_headlines_params = {
@@ -141,7 +141,7 @@ class SourceClient:
             )
         return articles[:target]
 
-    def fetch_all(self, limit_per_category: int = 5) -> tuple[list[Article], list[Article]]:
+    def fetch_all(self, limit_per_category: int = 50) -> tuple[list[Article], list[Article]]:
         global_articles: list[Article] = []
         japan_articles: list[Article] = []
 
@@ -155,4 +155,4 @@ class SourceClient:
         except Exception:
             japan_articles = []
 
-        return global_articles[:5], japan_articles[:5]
+        return global_articles[:limit_per_category], japan_articles[:limit_per_category]

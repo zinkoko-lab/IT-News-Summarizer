@@ -47,7 +47,7 @@ class GeminiSummarizer:
         if not articles:
             return []
 
-        limited = articles[: min(len(articles), 40)]
+        limited = articles[: min(len(articles), 50)]
         prompt = self._build_prompt(limited, region=region, top_n=top_n)
 
         url = f"https://generativelanguage.googleapis.com/v1beta/models/{self.model}:generateContent"
