@@ -48,7 +48,7 @@ python main.py
 - 取得件数: `global` と `japan` をそれぞれ最大50件
 - Top 5 選定: Gemini が各カテゴリから重要度順に5件を選定
 - Gemini入力: タイトルとdescriptionのみ（URLは渡さない）
-- LINE配信: URLなし、要約テキストのみ
+- LINE配信: タイトル・要約・元記事URLを送信
 - 出力形式:
   - `Global Top 5: [タイトル] + [要約]`
   - `Japan Top 5: [タイトル] + [要約]`

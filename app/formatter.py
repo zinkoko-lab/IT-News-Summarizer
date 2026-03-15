@@ -10,6 +10,7 @@ def build_summary_text_message(items: list[RankedSummary], region: Region) -> di
     for idx, item in enumerate(items[:5], start=1):
         lines.append(f"{idx}. [{item.title}]")
         lines.append(item.summary)
+        lines.append(f"URL: {item.url}")
         lines.append("")
 
     text = "\n".join(lines).strip()

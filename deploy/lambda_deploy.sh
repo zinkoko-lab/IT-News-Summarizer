@@ -11,6 +11,12 @@ FUNCTION_NAME="${FUNCTION_NAME:-it-news-summarizer-lambda}"
 ROLE_ARN="${ROLE_ARN:-}"
 ZIP_PATH="$ROOT_DIR/build/lambda/news_summarizer_lambda.zip"
 
+wait_until_updated() {
+  aws lambda wait function-updated \
+    --function-name "$FUNCTION_NAME" \
+    --region "$AWS_REGION"
+}
+
 required_envs=(
   NEWS_API_KEY
   GEMINI_API_KEY
@@ -34,6 +40,7 @@ if aws lambda get-function --function-name "$FUNCTION_NAME" --region "$AWS_REGIO
     --function-name "$FUNCTION_NAME" \
     --region "$AWS_REGION" \
     --zip-file "fileb://$ZIP_PATH" >/dev/null
+  wait_until_updated
 
   aws lambda update-function-configuration \
     --function-name "$FUNCTION_NAME" \
@@ -42,6 +49,7 @@ if aws lambda get-function --function-name "$FUNCTION_NAME" --region "$AWS_REGIO
     --runtime python3.11 \
     --timeout 60 \
     --environment "Variables={NEWS_API_KEY=$NEWS_API_KEY,GEMINI_API_KEY=$GEMINI_API_KEY,LINE_CHANNEL_ACCESS_TOKEN=$LINE_CHANNEL_ACCESS_TOKEN,LINE_USER_ID=$LINE_USER_ID,GEMINI_MODEL=${GEMINI_MODEL:-gemini-2.5-flash},TOP_N=${TOP_N:-5},REQUEST_TIMEOUT_SECONDS=${REQUEST_TIMEOUT_SECONDS:-20}}" >/dev/null
+  wait_until_updated
 
   echo "Updated Lambda: $FUNCTION_NAME ($AWS_REGION)"
 else
@@ -59,6 +67,7 @@ else
     --timeout 60 \
     --zip-file "fileb://$ZIP_PATH" \
     --environment "Variables={NEWS_API_KEY=$NEWS_API_KEY,GEMINI_API_KEY=$GEMINI_API_KEY,LINE_CHANNEL_ACCESS_TOKEN=$LINE_CHANNEL_ACCESS_TOKEN,LINE_USER_ID=$LINE_USER_ID,GEMINI_MODEL=${GEMINI_MODEL:-gemini-2.5-flash},TOP_N=${TOP_N:-5},REQUEST_TIMEOUT_SECONDS=${REQUEST_TIMEOUT_SECONDS:-20}}" >/dev/null
+  wait_until_updated
 
   echo "Created Lambda: $FUNCTION_NAME ($AWS_REGION)"
 fi

@@ -100,6 +100,7 @@ class GeminiSummarizer:
             out.append(
                 RankedSummary(
                     title=title_ja,
+                    url=article.url,
                     source=article.source,
                     published_at=article.published_at,
                     summary=summary,
@@ -129,6 +130,7 @@ class GeminiSummarizer:
             out.append(
                 RankedSummary(
                     title=article.title,
+                    url=article.url,
                     source=article.source,
                     published_at=article.published_at,
                     summary=f"- {summary}",

@@ -20,6 +20,7 @@ class Article:
 @dataclass(slots=True)
 class RankedSummary:
     title: str
+    url: str
     source: str
     published_at: datetime
     summary: str
