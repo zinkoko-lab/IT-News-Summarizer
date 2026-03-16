@@ -2,6 +2,8 @@
 
 NewsAPI から Global/Japan の IT ニュースを取得し、Gemini で要約して LINE に配信する Python アプリです。
 
+![イメージ写真](./IMG_0654.PNG)
+
 ## 構成
 
 -   `app/sources.py`: Global/Japan のニュース取得（各カテゴリ最大 50 件）
