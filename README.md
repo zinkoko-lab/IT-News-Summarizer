@@ -2,7 +2,7 @@
 
 NewsAPI から Global/Japan の IT ニュースを取得し、Gemini で要約して LINE に配信する Python アプリです。
 
-![イメージ写真](./IMG_0654.PNG)
+![イメージ写真](./IMG_0654.jpg)
 
 ## 構成
 
