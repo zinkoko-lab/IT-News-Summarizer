@@ -15,7 +15,9 @@ class SourceClient:
         self.news_api_key = news_api_key
         self.timeout_seconds = timeout_seconds
 
-    def _get_json_with_retry(self, url: str, params: dict[str, Any] | None = None, retries: int = 3) -> dict[str, Any]:
+    def _get_json_with_retry(
+        self, url: str, params: dict[str, Any] | None = None, retries: int = 3
+    ) -> dict[str, Any]:
         last_error: Exception | None = None
         for attempt in range(1, retries + 1):
             try:
@@ -87,7 +89,12 @@ class SourceClient:
         articles: list[Article] = []
         payload = self._get_json_with_retry(url, params=primary_params)
         articles.extend(
-            self._newsapi_to_articles(payload, region="global", fallback_source="NewsAPI Global", require_recent=True)
+            self._newsapi_to_articles(
+                payload,
+                region="global",
+                fallback_source="NewsAPI Global",
+                require_recent=True,
+            )
         )
         if len(articles) < target:
             payload2 = self._get_json_with_retry(url, params=fallback_params)
@@ -125,9 +132,16 @@ class SourceClient:
         }
 
         articles: list[Article] = []
-        payload = self._get_json_with_retry(top_headlines_url, params=top_headlines_params)
+        payload = self._get_json_with_retry(
+            top_headlines_url, params=top_headlines_params
+        )
         articles.extend(
-            self._newsapi_to_articles(payload, region="japan", fallback_source="NewsAPI JP", require_recent=True)
+            self._newsapi_to_articles(
+                payload,
+                region="japan",
+                fallback_source="NewsAPI JP",
+                require_recent=True,
+            )
         )
         if len(articles) < target:
             payload2 = self._get_json_with_retry(everything_url, params=fallback_params)
@@ -141,7 +155,9 @@ class SourceClient:
             )
         return articles[:target]
 
-    def fetch_all(self, limit_per_category: int = 50) -> tuple[list[Article], list[Article]]:
+    def fetch_all(
+        self, limit_per_category: int = 50
+    ) -> tuple[list[Article], list[Article]]:
         global_articles: list[Article] = []
         japan_articles: list[Article] = []
 
