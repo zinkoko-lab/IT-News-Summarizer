@@ -9,7 +9,9 @@ from .utils import extract_json_block
 
 
 class GeminiSummarizer:
-    def __init__(self, api_key: str, model: str = "gemini-2.5-flash", timeout_seconds: int = 20):
+    def __init__(
+        self, api_key: str, model: str = "gemini-2.5-flash", timeout_seconds: int = 20
+    ):
         self.api_key = api_key
         self.model = model
         self.timeout_seconds = timeout_seconds
@@ -21,29 +23,52 @@ class GeminiSummarizer:
                 f"[{idx}] title={article.title} | description={article.description[:320]}"
             )
 
+        # region_label = "日本" if region == "japan" else "海外"
+        # return (
+        #     "あなたはITニュース専門の編集者です。候補記事から重要度順に上位を選び、各記事を要約してください。\n"
+        #     f"対象: {region_label}\n"
+        #     f"上位件数: {top_n}\n"
+        #     "ルール:\n"
+        #     "- 出力はビジネスパーソン向けの自然で読みやすい日本語\n"
+        #     "- 技術専門用語は正確に維持する\n"
+        #     "- 英語記事は文脈を踏まえて日本語に意訳する\n"
+        #     "- URLは絶対に含めない\n"
+        #     "- 1記事につき要約は箇条書き1点のみ\n"
+        #     "- タイトルは日本語訳を含める\n"
+        #     "- 出力形式は以下を厳守する\n"
+        #     "  1. [日本語タイトル]\n"
+        #     "     - [読みやすい日本語で要約した内容]\n"
+        #     "- 候補外の事実を創作しない\n"
+        #     "出力は JSON のみ。\n"
+        #     '{"items":[{"index":1,"title_ja":"...","summary":"..."}]}'
+        #     "\n候補一覧:\n"
+        #     + "\n".join(lines)
+        # )
+
         region_label = "日本" if region == "japan" else "海外"
         return (
             "あなたはITニュース専門の編集者です。候補記事から重要度順に上位を選び、各記事を要約してください。\n"
             f"対象: {region_label}\n"
             f"上位件数: {top_n}\n"
             "ルール:\n"
-            "- 出力はビジネスパーソン向けの自然で読みやすい日本語\n"
+            "- 出力はビジネスパーソン向けの自然で読みやすいミャンマー語（ビルマ語）\n"
             "- 技術専門用語は正確に維持する\n"
-            "- 英語記事は文脈を踏まえて日本語に意訳する\n"
+            "- 英語や日本語の記事は文脈を踏まえてミャンマー語に意訳する\n"
             "- URLは絶対に含めない\n"
             "- 1記事につき要約は箇条書き1点のみ\n"
-            "- タイトルは日本語訳を含める\n"
+            "- タイトルはミャンマー語訳を含める\n"
             "- 出力形式は以下を厳守する\n"
-            "  1. [日本語タイトル]\n"
-            "     - [読みやすい日本語で要約した内容]\n"
+            "  1. [ミャンマー語タイトル]\n"
+            "     - [読みやすいミャンマー語で要約した内容]\n"
             "- 候補外の事実を創作しない\n"
             "出力は JSON のみ。\n"
-            '{"items":[{"index":1,"title_ja":"...","summary":"..."}]}'
-            "\n候補一覧:\n"
-            + "\n".join(lines)
+            '{"items":[{"index":1,"title_my":"...","summary":"..."}]}'
+            "\n候補一覧:\n" + "\n".join(lines)
         )
 
-    def rank_and_summarize(self, articles: list[Article], region: Region, top_n: int) -> list[RankedSummary]:
+    def rank_and_summarize(
+        self, articles: list[Article], region: Region, top_n: int
+    ) -> list[RankedSummary]:
         if not articles:
             return []
 
@@ -70,7 +95,9 @@ class GeminiSummarizer:
             data = resp.json()
             text = data["candidates"][0]["content"]["parts"][0]["text"]
             parsed = extract_json_block(text)
-            return self._to_ranked_summaries(parsed, limited, region=region, top_n=top_n)
+            return self._to_ranked_summaries(
+                parsed, limited, region=region, top_n=top_n
+            )
         except Exception:
             return self._fallback_rank(limited, region=region, top_n=top_n)
 
@@ -120,9 +147,13 @@ class GeminiSummarizer:
                     break
         return out
 
-    def _fallback_rank(self, articles: list[Article], region: Region, top_n: int) -> list[RankedSummary]:
+    def _fallback_rank(
+        self, articles: list[Article], region: Region, top_n: int
+    ) -> list[RankedSummary]:
         out: list[RankedSummary] = []
-        sorted_articles = sorted(articles, key=lambda x: x.published_at, reverse=True)[:top_n]
+        sorted_articles = sorted(articles, key=lambda x: x.published_at, reverse=True)[
+            :top_n
+        ]
         for article in sorted_articles:
             snippet = article.description.replace("\n", " ").strip()
             snippet = snippet[:120] + ("..." if len(snippet) > 120 else "")
